@@ -10,21 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
 
 @WebServlet("/authenticate")
 public class Authentication extends HttpServlet {
-    Firestore db;
-    public Authentication() throws IOException {
-        FirestoreOptions firestoreOptions =
-        FirestoreOptions.getDefaultInstance().toBuilder()
-        .setProjectId("summer20-sps-77")
-        .setCredentials(GoogleCredentials.getApplicationDefault())
-        .build();
-        this.db = firestoreOptions.getService();
-    }
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserService userService = UserServiceFactory.getUserService();
