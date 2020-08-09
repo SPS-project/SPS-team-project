@@ -4,11 +4,10 @@ public class UserInfo {
     private String name;
     private String email;
     private int age;
-    private String gender;
-    private boolean exists;
-    public UserInfo() {
-        
+    private enum UserGender {
+        male, female, other;
     }
+    private UserGender gender;
     public String getEmail() {
         return email;
     }
@@ -27,16 +26,11 @@ public class UserInfo {
     public void setAge(int age) {
         this.age = age;
     }
-    public String getGender() {
-        return gender;
-    }
     public void setGender(String gender) {
-        this.gender = gender;
+        this.gender = UserGender.valueOf(gender);
     }
-    public boolean getExists() {
-        return exists;
-    }
-    public void setExists(boolean exists) {
-        this.exists = exists;
+    public String getGender() {
+        if (gender == null) return "";
+        return gender.toString();
     }
 }

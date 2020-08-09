@@ -22,14 +22,11 @@ public class Authentication extends HttpServlet {
             String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
             authObject.setIsUserLoggedIn(true);
             authObject.setEmail(userService.getCurrentUser().getEmail());
-            authObject.setLogInUrl(null);
             authObject.setLogOutUrl(logoutUrl);
         } else {
             String urlToRedirectToAfterUserLogsIn = "/";
             String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-            authObject.setIsUserLoggedIn(false);
             authObject.setLogInUrl(loginUrl);
-            authObject.setLogOutUrl(null);
         }
         Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         response.setContentType("application/json");

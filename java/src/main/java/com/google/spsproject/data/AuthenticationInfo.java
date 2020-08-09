@@ -5,9 +5,6 @@ public class AuthenticationInfo {
     private String logInUrl;
     private String logOutUrl;
     private String email;
-    public AuthenticationInfo() {
-        
-    }
     public boolean getIsUserLoggedIn() {
         return isUserLoggedIn;
     }

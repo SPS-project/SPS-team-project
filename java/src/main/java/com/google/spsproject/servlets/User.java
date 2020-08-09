@@ -18,12 +18,12 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
 import com.google.api.core.ApiFuture;
-import java.util.*;
-
+import java.util.Map;
+import java.util.HashMap;
 
 @WebServlet("/user")
 public class User extends HttpServlet {
-    Firestore db;
+    private Firestore db;
     public User() throws IOException {
         FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder()
@@ -31,6 +31,10 @@ public class User extends HttpServlet {
         .setCredentials(GoogleCredentials.getApplicationDefault())
         .build();
         this.db = firestoreOptions.getService();
+    }
+    public static boolean ValidateString(String str) {
+        if (str != null && !str.trim().isEmpty()) return true;
+        return false;
     }
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -41,13 +45,10 @@ public class User extends HttpServlet {
         try {
             DocumentSnapshot document = future.get();
             if (document.exists()) {
-                UserObject.setExists(true);
                 UserObject.setEmail(email);
                 UserObject.setName(document.get("name").toString());
                 UserObject.setAge(Integer.parseInt(document.get("age").toString()));
                 UserObject.setGender(document.get("gender").toString());
-            } else {
-                UserObject.setExists(false);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -60,27 +61,25 @@ public class User extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json = "";
-		if (br != null){
-			json = br.readLine();
-			System.out.println(json);
-		}
+        if (br != null) {
+            json = br.readLine();
+        }
         Gson gson = new Gson();
         UserInfo UserObject = gson.fromJson(json, UserInfo.class);
         String email = UserObject.getEmail();
         String name = UserObject.getName();
         int age = UserObject.getAge();
         String gender = UserObject.getGender();
+        if (ValidateString(email) == false || ValidateString(name) == false || ValidateString(gender) == false || age == 0) {
+            response.sendError(400, "Enter valid parameters" );
+            return;
+        }
         DocumentReference docRef = db.collection("users").document(email);
         Map<String, Object> docData = new HashMap<>();
         docData.put("name", name);
         docData.put("age", age);
         docData.put("gender", gender);
         ApiFuture<WriteResult> future = db.collection("users").document(email).set(docData);
-        try {
-            System.out.println("Update time : " + future.get().getUpdateTime());
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         response.setContentType("application/json");
         response.getWriter().println(gson.toJson(UserObject));
     }
