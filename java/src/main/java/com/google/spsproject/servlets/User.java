@@ -20,10 +20,16 @@ import com.google.cloud.firestore.WriteResult;
 import com.google.api.core.ApiFuture;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+import java.util.logging.FileHandler;
+import java.util.logging.SimpleFormatter;
 
 @WebServlet("/user")
 public class User extends HttpServlet {
     private Firestore db;
+    private static final Logger logger = Logger.getLogger(User.class.getName());
+    private FileHandler fh;
     public User() throws IOException {
         FirestoreOptions firestoreOptions =
         FirestoreOptions.getDefaultInstance().toBuilder()
@@ -31,6 +37,10 @@ public class User extends HttpServlet {
         .setCredentials(GoogleCredentials.getApplicationDefault())
         .build();
         this.db = firestoreOptions.getService();
+        filehandler = new FileHandler("errorfile.log");
+        logger.addHandler(filehandler);
+        SimpleFormatter formatter = new SimpleFormatter();
+        filehandler.setFormatter(formatter);
     }
     public static boolean ValidateString(String str) {
         if (str != null && !str.trim().isEmpty()) return true;
@@ -51,7 +61,7 @@ public class User extends HttpServlet {
                 UserObject.setGender(document.get("gender").toString());
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error from User Class ", e);
         }
         Gson gson = new Gson();
         response.setContentType("application/json");
