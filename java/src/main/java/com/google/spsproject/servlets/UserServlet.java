@@ -44,8 +44,8 @@ public class UserServlet extends HttpServlet {
         filehandler.setFormatter(formatter);
     }
 
-    public static boolean ValidateString(String str) {
-        if (str != null && !str.trim().isEmpty()) return true;
+    public static boolean ValidateString(String string) {
+        if (string != null && !string.trim().isEmpty()) return true;
         return false;
     }
 
@@ -73,10 +73,10 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+        BufferedReader bufferReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
         String json = "";
-        if (br != null) {
-            json = br.readLine();
+        if (bufferReader != null) {
+            json = bufferReader.readLine();
         }
         Gson gson = new Gson();
         User userObject = gson.fromJson(json, User.class);
