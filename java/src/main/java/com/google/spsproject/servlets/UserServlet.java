@@ -44,7 +44,7 @@ public class UserServlet extends HttpServlet {
         filehandler.setFormatter(formatter);
     }
 
-    public static boolean ValidateString(String string) {
+    public static boolean validateString(String string) {
         if (string != null && !string.trim().isEmpty()) return true;
         return false;
     }
@@ -84,7 +84,7 @@ public class UserServlet extends HttpServlet {
         String name = userObject.getName();
         int age = userObject.getAge();
         String gender = userObject.getGender();
-        if (ValidateString(email) == false || ValidateString(name) == false || ValidateString(gender) == false || age == 0) {
+        if (validateString(email) == false || validateString(name) == false || validateString(gender) == false || age <= 0) {
             response.sendError(400, "Enter valid parameters" );
             return;
         }
